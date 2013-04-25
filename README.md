@@ -1,5 +1,10 @@
 # MicroEvent.js
 
+**PeerCDN Note**: Our additions are:
+- Google Closure annotations
+- Changed `MicroEvent.mixin` to not contain the hardcoded function names, since Closure with `ADVANCED_OPTIMIZATIONS` will rename them.
+- Rename `bind` -> `on`, `unbind` -> `off`, and `trigger` -> `emit`.
+
 _MicroEvent.js_ is a event emitter library which provides the
 [observer pattern](http://en.wikipedia.org/wiki/Observer_pattern) to javascript objects.
 It works on node.js and browser. It is a single .js file containing
