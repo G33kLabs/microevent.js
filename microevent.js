@@ -12,6 +12,7 @@ var MicroEvent = function() {}
 
 /**
  * Add an event.
+ * @expose
  * @param  {string} event
  * @param  {function(...)} fct
  */
@@ -24,6 +25,7 @@ MicroEvent.prototype.on = function (event, fct) {
 
 /**
  * Remove an event.
+ * @expose
  * @param  {string} event
  * @param  {function(...)} fct
  */
@@ -36,6 +38,7 @@ MicroEvent.prototype.off = function (event, fct) {
 
 /**
  * Trigger an event.
+ * @expose
  * @type {function(string, ...[*])}
  */
 
