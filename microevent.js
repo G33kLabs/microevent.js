@@ -44,12 +44,12 @@ MicroEvent.prototype.once = function (event, fn) {
  * @param  {function(...)} fn
  */
 MicroEvent.prototype.off = function (event, fn) {
-  this._events = this._events || {}
-  if (event in this._events === false) return
-
-  this._events[event].map(function (obj, i) {
+  var self = this
+  self._events = self._events || {}
+  if (event in self._events === false) return
+  self._events[event].map(function (obj, i) {
     if (obj.fn === fn) {
-      this._events[event].splice(i, 1)
+      self._events[event].splice(i, 1)
     }
   })
 }
