@@ -74,7 +74,7 @@ MicroEvent.prototype.emit = function (event /* , args... */ ) {
  *
  * @param {Object} destObject the object which will support MicroEvent
  */
-MicroEvent.mixin = function(destObject) {
+MicroEvent.mixin = function (destObject) {
   var props = Object.getOwnPropertyNames(MicroEvent.prototype)
   for (var i = 0; i < props.length; i++) {
     destObject.prototype[props[i]] = MicroEvent.prototype[props[i]]
