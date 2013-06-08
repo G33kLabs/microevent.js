@@ -7,44 +7,64 @@
  *
  * @constructor
  */
-
 var MicroEvent = function() {}
 
 /**
- * Add an event.
+ * Add an event listener.
+ *
  * @expose
  * @param  {string} event
  * @param  {function(...)} fn
  */
-
 MicroEvent.prototype.on = function (event, fn) {
   this._events[event] = this._events[event] || []
-  this._events[event].push(fn)
+  this._events[event].push({fn: fn, once: false})
 }
 
 /**
- * Remove an event.
+ * Add an event listener that will get executed at most once, even
+ * if the event is emitted multiple times.
+ *
  * @expose
  * @param  {string} event
  * @param  {function(...)} fn
  */
-
-MicroEvent.prototype.off = function (event, fn) {
-  if (!this._events || event in this._events === false) return
-  this._events[event].splice(this._events[event].indexOf(fn), 1)
+MicroEvent.prototype.once = function (event, fn) {
+  this._events[event] = this._events[event] || []
+  this._events[event].push({fn: fn, once: true})
 }
 
 /**
- * Trigger an event.
+ * Remove an event listener.
+ *
+ * @expose
+ * @param  {string} event
+ * @param  {function(...)} fn
+ */
+MicroEvent.prototype.off = function (event, fn) {
+  if (!this._events || event in this._events === false) return
+  this._events[event].map(function (obj, i) {
+    if (obj.fn === fn) {
+      this._events[event].splice(i, 1)
+    }
+  })
+}
+
+/**
+ * Trigger an event. Execute all listening functions.
+ *
  * @expose
  * @type {function(string, ...[*])}
  */
-
 MicroEvent.prototype.emit = function (event /* , args... */ ) {
   if (!this._events || event in this._events === false) return
   var args = Array.prototype.slice.call(arguments, 1)
   for (var i = 0, len = this._events[event].length; i < len; i++) {
-    this._events[event][i].apply(this, args)
+    var obj = this._events[event][i]
+    obj.fn.apply(this, args)
+    if (obj.once) {
+      this.off(event, obj.fn)
+    }
   }
 }
 
@@ -54,7 +74,6 @@ MicroEvent.prototype.emit = function (event /* , args... */ ) {
  *
  * @param {Object} destObject the object which will support MicroEvent
  */
-
 MicroEvent.mixin = function(destObject) {
   var props = Object.getOwnPropertyNames(MicroEvent.prototype)
   for (var i = 0; i < props.length; i++) {
@@ -63,7 +82,6 @@ MicroEvent.mixin = function(destObject) {
   this._events = {}
 }
 
-// export in common js
 if (typeof module !== "undefined" && ('exports' in module)) {
   module.exports = MicroEvent
 }
