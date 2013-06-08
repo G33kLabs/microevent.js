@@ -17,6 +17,7 @@ var MicroEvent = function() {}
  * @param  {function(...)} fn
  */
 MicroEvent.prototype.on = function (event, fn) {
+  this._events = this._events || {}
   this._events[event] = this._events[event] || []
   this._events[event].push({fn: fn, once: false})
 }
@@ -30,6 +31,7 @@ MicroEvent.prototype.on = function (event, fn) {
  * @param  {function(...)} fn
  */
 MicroEvent.prototype.once = function (event, fn) {
+  this._events = this._events || {}
   this._events[event] = this._events[event] || []
   this._events[event].push({fn: fn, once: true})
 }
@@ -42,7 +44,9 @@ MicroEvent.prototype.once = function (event, fn) {
  * @param  {function(...)} fn
  */
 MicroEvent.prototype.off = function (event, fn) {
-  if (!this._events || event in this._events === false) return
+  this._events = this._events || {}
+  if (event in this._events === false) return
+
   this._events[event].map(function (obj, i) {
     if (obj.fn === fn) {
       this._events[event].splice(i, 1)
@@ -57,8 +61,10 @@ MicroEvent.prototype.off = function (event, fn) {
  * @type {function(string, ...[*])}
  */
 MicroEvent.prototype.emit = function (event /* , args... */ ) {
-  if (!this._events || event in this._events === false) return
+  this._events = this._events || {}
   var args = Array.prototype.slice.call(arguments, 1)
+  if (event in this._events === false) return
+
   for (var i = 0, len = this._events[event].length; i < len; i++) {
     var obj = this._events[event][i]
     obj.fn.apply(this, args)
@@ -79,7 +85,6 @@ MicroEvent.mixin = function (destObject) {
   for (var i = 0; i < props.length; i++) {
     destObject.prototype[props[i]] = MicroEvent.prototype[props[i]]
   }
-  this._events = {}
 }
 
 if (typeof module !== "undefined" && ('exports' in module)) {
