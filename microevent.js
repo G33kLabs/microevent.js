@@ -20,6 +20,7 @@ MicroEvent.prototype.on = function (event, fn) {
   this._events = this._events || {}
   this._events[event] = this._events[event] || []
   this._events[event].push({fn: fn, once: false})
+  return this
 }
 
 /**
@@ -34,6 +35,7 @@ MicroEvent.prototype.once = function (event, fn) {
   this._events = this._events || {}
   this._events[event] = this._events[event] || []
   this._events[event].push({fn: fn, once: true})
+  return this
 }
 
 /**
@@ -52,6 +54,7 @@ MicroEvent.prototype.off = function (event, fn) {
       self._events[event].splice(i, 1)
     }
   })
+  return this
 }
 
 /**
