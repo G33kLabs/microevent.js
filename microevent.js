@@ -84,21 +84,9 @@ MicroEvent.prototype.emit = function (event /* , args... */ ) {
  * @param {Object} destObject the object which will support MicroEvent
  */
 MicroEvent.mixin = function (destObject) {
-  // MicroEvent.mixin is generally executed during JavaScript parsing time
-  // so it's possible for it to throw errors in browsers that don't support
-  // Object.getOwnPropertyNames and hence, prevent the entire rest of the
-  // script from executing. So, we catch the errors and print to console, if
-  // possible.
-  try {
-    var props = Object.getOwnPropertyNames(MicroEvent.prototype)
-    for (var i = 0; i < props.length; i++) {
-      destObject.prototype[props[i]] = MicroEvent.prototype[props[i]]
-    }
-  } catch (e) {
-    if (typeof console !== 'undefined' && console.log) {
-      console.log('Error in using the MicroEvent.mixin')
-      console.log(e)
-    }
+  var props = ['on', 'once', 'off', 'emit']
+  for (var i = 0; i < props.length; i++) {
+    destObject.prototype[props[i]] = MicroEvent.prototype[props[i]]
   }
 }
 
